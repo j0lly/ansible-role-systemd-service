@@ -1,16 +1,18 @@
 ---
 # tasks file for roles/systemd/service
-- file: state=directory path="{{ item }}" recurse=yes
+- name: Build required folders
+  file: state=directory path="{{ item }}" recurse=yes
   with_items:
     - "{{ ansible_unit_test_prefix_dir }}{{ systemd_service_default_dir }}"
     - "{{ ansible_unit_test_prefix_dir }}{{ systemd_service_systemd_dir }}"
 
-- template: src="default.j2" dest="{{ ansible_unit_test_prefix_dir }}/{{ systemd_service_default_dir }}/{{ systemd_service_name }}"
-  notify: reload systemd
+- name: Add default environment variables file
+  template: src="default.j2" dest="{{ ansible_unit_test_prefix_dir }}/{{ systemd_service_default_dir }}/{{ systemd_service_name }}"
+  notify: reload systemd service
 
-- template: src="service.j2" dest="{{ ansible_unit_test_prefix_dir }}/{{ systemd_service_systemd_dir }}/{{ systemd_service_name }}.service"
+- name: Add sytemd service file
+  template: src="service.j2" dest="{{ ansible_unit_test_prefix_dir }}/{{ systemd_service_systemd_dir }}/{{ systemd_service_name }}.service"
   register: service_file
-  notify: reload systemd
-
-- shell: systemctl daemon-reload
-  when: service_file.changed and not ansible_unit_test
+  notify:
+    - reload systemd daemon
+    - reload systemd service

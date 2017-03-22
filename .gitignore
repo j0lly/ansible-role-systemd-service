@@ -1,1 +1,3 @@
 /tests/outputs
+.molecule
+__pycache__

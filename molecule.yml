@@ -1,0 +1,43 @@
+---
+dependency:
+  name: galaxy
+
+ansible:
+  playbook: tests/molecule_test.yml
+
+driver:
+  name: docker
+
+docker:
+  containers:
+    - name: centos1
+      image: centos
+      image_version: 7
+      privileged: True
+      command: '/usr/lib/systemd/systemd'
+      ansible_groups:
+        - min1
+    - name: centos2
+      image: centos
+      image_version: 7
+      privileged: True
+      command: '/usr/lib/systemd/systemd'
+      ansible_groups:
+        - min2
+    - name: ubuntu1
+      image: ubuntu
+      image_version: latest
+      privileged: True
+      command: '/lib/systemd/systemd'
+      ansible_groups:
+        - min1
+    - name: ubuntu2
+      image: ubuntu
+      image_version: latest
+      privileged: True
+      command: '/lib/systemd/systemd'
+      ansible_groups:
+        - min2
+
+verifier:
+  name: testinfra
