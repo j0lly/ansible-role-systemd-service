@@ -1,13 +1,9 @@
 ---
 # handlers file for roles/systemd/service
 - name: reload systemd service
-  service:
+  systemd:
     name: '{{ systemd_service_name }}'
     state: restarted
+    daemon_reload: yes
+    enabled: yes
   when: not ansible_unit_test
-
-- name: reload systemd daemon
-  shell: systemctl daemon-reload
-  when: ansible_unit_test
-  tags:
-    - skip_ansible_lint
